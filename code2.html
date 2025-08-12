@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>验证码验证</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #f7f8fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .verify-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .verify-title {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    .verify-block {
+      margin-top: 1rem;
+    }
+    /* 自适应处理 */
+    @media (max-width: 480px) {
+      .verify-container {
+        padding: 1.5rem 1rem;
+        border-radius: 8px;
+      }
+      .verify-title {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="verify-container">
+    <div class="verify-title">请完成验证码验证</div>
+    <div class="verify-block">
+      <!-- FUNCDN_CHALLENGE_BLOCK -->
+    </div>
+  </div>
+</body>
+</html>
