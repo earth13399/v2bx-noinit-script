@@ -19,7 +19,7 @@
     .container {
         background: #fff;
         width: 95%;
-        max-width: 480px;
+        max-width: 420px;
         padding: 30px 20px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         border-radius: 8px;
@@ -32,59 +32,33 @@
     p {
         font-size: 14px;
         color: #666;
-        margin: 4px 0 16px;
+        margin-bottom: 20px;
     }
-    /* 验证码区块自适应 */
+    /* 验证码容器 */
     .captcha-wrapper {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
-        flex-wrap: wrap;
-        margin: 20px 0;
+        justify-content: center;
+        gap: 16px;
+        margin-bottom: 20px;
     }
-    /* 系统验证码样式 */
-    .captcha-code {
-        width: 100%;
-        max-width: 400px;
-        height: auto;
-        border: 1px solid #d9dbdc;
-        margin: 12px auto;
-        padding: 10px;
-        box-sizing: border-box;
-    }
-    .code {
-        width: 180px;
-        height: 58px;
-        margin: 10px;
-        border: 1px dashed #000;
-    }
-    .change-code-text {
-        font-size: 16px;
-        color: #f8702b;
-        cursor: pointer;
-        white-space: nowrap;
-    }
-    .change-code {
-        position: relative;
-        top: 3px;
-        left: 10px;
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        background: url(../assets/img/sprite.png) no-repeat;
-        background-position: -613px -30px;
-        cursor: pointer;
-    }
+    /* 按钮样式 */
     .next {
-        margin-top: 22px;
-        width: 120px;
-        height: 36px;
+        width: 100%;
+        max-width: 200px;
+        height: 40px;
         background-color: #3fac70;
         border: none;
         outline: none;
         color: #fff;
         cursor: pointer;
         border-radius: 4px;
+        font-size: 16px;
+        transition: background-color 0.2s;
+    }
+    .next:hover {
+        background-color: #36995e;
     }
 </style>
 </head>
@@ -92,7 +66,10 @@
     <div class="container">
         <h1>正在进行安全验证</h1>
         <p>请完成下方的验证，以继续访问网站</p>
+        <div class="captcha-wrapper">
             <!-- FUNCDN_CHALLENGE_BLOCK -->
+            <button class="next">继续</button>
+        </div>
     </div>
 </body>
 </html>
