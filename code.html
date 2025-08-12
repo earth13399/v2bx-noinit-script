@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安全验证中...</title>
+<style>
+    body {
+        background-color: #f6f9fc;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        color: #333;
+    }
+    .container {
+        background: #fff;
+        max-width: 500px;
+        width: 90%;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        border-radius: 8px;
+    }
+    h1 {
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+    }
+    p {
+        font-size: 14px;
+        color: #555;
+        margin: 6px 0;
+    }
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    /* 系统验证码样式（保留原样或可微调） */
+    .captcha-code {
+        width: 400px;
+        max-width: 100%;
+        height: 120px;
+        line-height: 120px;
+        border: 1px solid #d9dbdc;
+        margin: 12px auto;
+        padding: 0 30px;
+        box-sizing: border-box;
+    }
+    .code {
+        float: left;
+        width: 180px;
+        height: 58px;
+        margin: 30px 20px 0px 0px;
+        border: 1px dashed #000;
+    }
+    .change-code-text {
+        font-size: 16px;
+        color: #f8702b;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    .change-code {
+        position: relative;
+        top: 3px;
+        left: 10px;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background: url(../assets/img/sprite.png) no-repeat;
+        background-position: -613px -30px;
+        cursor: pointer;
+    }
+    .next {
+        margin-top: 22px;
+        width: 120px;
+        height: 36px;
+        background-color: #3fac70;
+        border: none;
+        outline: none;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>正在进行安全检查...</h1>
+        <div class="spinner"></div>
+        <p>请稍候，我们正在验证您的浏览器。</p>
+        <p>如果长时间未跳转，请刷新页面。</p>
+        <!-- FUNCDN_CHALLENGE_BLOCK -->
+    </div>
+</body>
+</html>
