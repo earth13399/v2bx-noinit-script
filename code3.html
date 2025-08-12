@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Captcha Challenge</title>
+  <link rel="stylesheet" href="https://www.funcdn.com/funres/css/common.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #f7f8fa;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
+      text-align: center;
+    }
+    .title {
+      font-size: 1.5rem;
+      margin-bottom: .5rem;
+      color: #333;
+    }
+    .sub-title {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 1.5rem;
+    }
+    .captcha-area {
+      display: flex;
+      justify-content: center;
+    }
+    .bottom {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #999;
+    }
+  </style>
+</head>
+<body class="captcha default">
+  <div class="container">
+    <div class="captcha-area">
+      <div>
+        <div class="title">请完成验证</div>
+        <div class="sub-title">为了确保安全，请完成以下人机验证</div>
+        <div>
+          <!-- FUNCDN_CHALLENGE_BLOCK -->
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      验证完成后您将继续访问本站
+    </div>
+  </div>
+</body>
+</html>
