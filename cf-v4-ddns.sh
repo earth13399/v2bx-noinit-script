@@ -25,6 +25,7 @@ set -o pipefail
 #            -f false|true \           # force dns update, disregard local stored ip
 
 # default config
+HOME=${HOME:-/root}
 
 # API key, see https://www.cloudflare.com/a/account/my-account,
 # incorrect api-key results in E_UNAUTH error
