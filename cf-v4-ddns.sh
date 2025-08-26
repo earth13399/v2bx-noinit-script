@@ -40,7 +40,7 @@ CFZONE_NAME=
 CFRECORD_NAME=
 
 # Record type, A(IPv4)|AAAA(IPv6), default IPv4
-CFRECORD_TYPE=
+CFRECORD_TYPE=A
 
 # Cloudflare TTL for record, between 120 and 86400 seconds
 CFTTL=
