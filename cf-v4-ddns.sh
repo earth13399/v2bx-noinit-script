@@ -43,10 +43,10 @@ CFRECORD_NAME=
 CFRECORD_TYPE=A
 
 # Cloudflare TTL for record, between 120 and 86400 seconds
-CFTTL=
+CFTTL=60
 
 # Ignore local file, update ip anyway
-FORCE=true
+FORCE=false
 
 WANIPSITE="http://ipv4.icanhazip.com"
 
@@ -130,11 +130,6 @@ fi
 
 # If WAN is changed, update cloudflare
 echo "Updating DNS to $WAN_IP"
-
-echo "$CFZONE_ID"
-echo "$CFRECORD_TYPE"
-echo "$CFRECORD_NAME"
-echo "$CFTTL"
 
 RESPONSE=$(curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$CFZONE_ID/dns_records/$CFRECORD_ID" \
   -H "X-Auth-Email: $CFUSER" \
