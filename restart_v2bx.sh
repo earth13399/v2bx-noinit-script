@@ -10,7 +10,8 @@ CRON_JOB="$RANDOM_MINUTE 4 * * * $SCRIPT_PATH >/dev/null 2>&1"
 echo "创建脚本 $SCRIPT_PATH..."
 cat <<EOF > "$SCRIPT_PATH"
 #!/bin/bash
-/usr/local/V2bX/V2bX restart
+systemctl daemon-reload
+systemctl restart v2bx_*
 EOF
 
 # 2. 设置执行权限
