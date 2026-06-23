@@ -25,7 +25,7 @@ echo "   SSL        : ${USE_SSL:-否}"
 # 确保 Netdata 已安装
 if ! command -v netdata &> /dev/null; then
     echo "⚠️  Netdata 未安装，正在安装..."
-    bash <(curl -Ss https://get.netdata.cloud/kickstart.sh) --dont-start-it
+    bash <(curl -Ss https://get.netdata.cloud/kickstart.sh) --install-type any --dont-start-it
 fi
 
 cd /etc/netdata
