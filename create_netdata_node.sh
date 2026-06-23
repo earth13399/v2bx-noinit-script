@@ -12,7 +12,7 @@ USE_SSL="${4}"   # 可选：ssl
 if [ -z "$PARENT" ] || [ -z "$API_KEY" ] || [ -z "$HOSTNAME" ]; then
     echo "❌ 使用方法: $0 <PARENT> <API_KEY> \"<机器名称>\" [ssl]"
     echo "示例: $0 192.168.1.100 你的APIKEY \"prod-web-01\""
-    echo "      $0 ntd.devsprint365.com 你的APIKEY \"prod-web-01\" ssl"
+    echo "      $0 192.168.1.100 你的APIKEY \"prod-web-01\" ssl"
     exit 1
 fi
 
