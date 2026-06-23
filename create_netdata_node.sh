@@ -70,16 +70,6 @@ sudo cat > /tmp/netdata.conf.new << 'EOC'
 
 [web]
     mode = none
-
-# 禁用系统日志采集（重要！）
-[plugin:proc:systemd-journal]
-    enabled = no
-
-[plugin:proc:logs]
-    enabled = no
-
-[logs]
-    retention = 86400     # 日志最多保留1天
 EOC
 
 # 安全合并
