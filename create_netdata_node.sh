@@ -1,5 +1,5 @@
 #!/bin/bash
-# Netdata Child 节点一键配置脚本（支持 SSL 开关）
+# Netdata Child 节点一键配置脚本（支持 SSL 开关）- 已禁用日志采集
 
 set -e
 
@@ -50,26 +50,36 @@ enabled = yes
 destination = ${DESTINATION}
 api key = ${API_KEY}
 
-# 推荐优化
-send charts matching = system.* disk.* net.* memory.* cpu.* !*.debug
-buffer size = 10MiB
+# 推荐优化 - 过滤掉日志相关
+send charts matching = system.* disk.* net.* memory.* cpu.* !*.debug !logs.* !systemd.journal.*
+buffer size = 15MiB
 reconnect delay = 15s
 EOF
 
 echo "✅ stream.conf 配置完成 (SSL: ${USE_SSL:-否})"
 
-# 配置自定义机器名称 + 资源优化
+# 配置自定义机器名称 + 资源优化 + 禁用日志
 sudo cat > /tmp/netdata.conf.new << 'EOC'
 [global]
     hostname = HOSTNAME_PLACEHOLDER
     memory mode = ram
-    history = 3600
+    history = 7200
 
 [health]
     enabled = no
 
 [web]
     mode = none
+
+# 禁用系统日志采集（重要！）
+[plugin:proc:systemd-journal]
+    enabled = no
+
+[plugin:proc:logs]
+    enabled = no
+
+[logs]
+    retention = 86400     # 日志最多保留1天
 EOC
 
 # 安全合并
@@ -83,7 +93,7 @@ else
     sudo mv /tmp/netdata.conf.new netdata.conf
 fi
 
-echo "✅ netdata.conf 配置完成"
+echo "✅ netdata.conf 配置完成（已禁用日志采集）"
 
 # 重启
 sudo systemctl restart netdata
@@ -94,7 +104,7 @@ echo "🎉 配置完成！"
 echo "🔍 当前 stream 配置："
 cat /etc/netdata/stream.conf
 echo ""
-echo "📋 建议检查日志："
-echo "   sudo journalctl -u netdata -n 50 --no-pager | grep -E 'STREAM|receive|error'"
+echo "📋 建议检查："
+echo "   sudo journalctl -u netdata -n 30 --no-pager | grep -E 'STREAM|error'"
 echo ""
 echo "刷新 Parent 仪表盘，应该看到机器名为：${HOSTNAME}"
