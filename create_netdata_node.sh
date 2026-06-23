@@ -31,9 +31,11 @@ fi
 cd /etc/netdata
 
 # 备份
-if [ ! -f stream.conf.bak ]; then
+if [ -f stream.conf ]; then
     sudo cp stream.conf "stream.conf.bak.$(date +%F-%H%M%S)"
     echo "✅ 已备份 stream.conf"
+else
+    echo "ℹ️  stream.conf 不存在，跳过备份（首次运行正常）"
 fi
 
 # 构建 destination
