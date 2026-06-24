@@ -25,22 +25,26 @@ echo " 机器名称   : ${HOSTNAME}"
 echo " SSL        : ${USE_SSL:-否}"
 
 # ==================== 安装 Netdata（重点修复）====================
+# ==================== 安装 Netdata（2026 年最新非交互写法）====================
 if ! command -v netdata &> /dev/null; then
     echo "⚠️ Netdata 未安装，正在安装..."
 
-    # 强制清理残留
+    # 先强制清理残留
     sudo systemctl stop netdata 2>/dev/null || true
     sudo apt-get purge -y netdata netdata-repo-edge 2>/dev/null || true
     sudo rm -rf /etc/netdata /var/lib/netdata /var/cache/netdata /tmp/netdata-kickstart* 2>/dev/null || true
 
-    # 尝试 static 安装（最推荐）
-    echo "→ 尝试 static 安装..."
-    if ! bash <(curl -Ss https://get.netdata.cloud/kickstart.sh) \
-        --install-type static --dont-start-it --accept; then
-        echo "→ static 失败，尝试 git 方式..."
-        bash <(curl -Ss https://get.netdata.cloud/kickstart.sh) \
-            --install-type git --dont-start-it --accept
-    fi
+    # 使用最新非交互方式安装（推荐）
+    echo "→ 使用非交互方式安装 Netdata..."
+    bash <(curl -Ss https://get.netdata.cloud/kickstart.sh) \
+        --non-interactive \
+        --dont-start-it || {
+            echo "→ 安装失败，尝试 static-only 方式..."
+            bash <(curl -Ss https://get.netdata.cloud/kickstart.sh) \
+                --non-interactive \
+                --static-only \
+                --dont-start-it
+        }
 fi
 
 # 确保进入配置目录
