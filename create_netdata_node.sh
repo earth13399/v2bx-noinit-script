@@ -1,7 +1,5 @@
 #!/bin/bash
 # Netdata Child 节点一键配置脚本 - 最终优化版
-# 彻底禁用日志 + 解决安装交互问题
-
 set -e
 export DEBIAN_FRONTEND=noninteractive
 
@@ -24,39 +22,41 @@ echo " API Key    : ${API_KEY}"
 echo " 机器名称   : ${HOSTNAME}"
 echo " SSL        : ${USE_SSL:-否}"
 
-# ==================== 安装 Netdata（重点修复）====================
-# ==================== 安装 Netdata（2026 年最新非交互写法）====================
+# ==================== 1. 安装 Netdata ====================
 if ! command -v netdata &> /dev/null; then
     echo "⚠️ Netdata 未安装，正在安装..."
 
-    # 先强制清理残留
+    # 强制清理残留
     sudo systemctl stop netdata 2>/dev/null || true
     sudo apt-get purge -y netdata netdata-repo-edge 2>/dev/null || true
     sudo rm -rf /etc/netdata /var/lib/netdata /var/cache/netdata /tmp/netdata-kickstart* 2>/dev/null || true
 
-    # 使用最新非交互方式安装（推荐）
+    # 使用最新非交互方式安装
     echo "→ 使用非交互方式安装 Netdata..."
-    bash <(curl -Ss https://get.netdata.cloud/kickstart.sh) \
-        --non-interactive \
-        --dont-start-it || {
-            echo "→ 安装失败，尝试 static-only 方式..."
-            bash <(curl -Ss https://get.netdata.cloud/kickstart.sh) \
-                --non-interactive \
-                --static-only \
-                --dont-start-it
-        }
+    if ! bash <(curl -Ss https://get.netdata.cloud/kickstart.sh) \
+        --non-interactive --dont-start-it; then
+        echo "→ 尝试 static-only 方式..."
+        bash <(curl -Ss https://get.netdata.cloud/kickstart.sh) \
+            --non-interactive --static-only --dont-start-it
+    fi
+
+    # 再次检查是否安装成功
+    if ! command -v netdata &> /dev/null; then
+        echo "❌ Netdata 安装失败，请手动检查后重试"
+        exit 1
+    fi
+    echo "✅ Netdata 安装成功"
 fi
 
-# 确保进入配置目录
+# ==================== 2. 进入配置目录（此时目录已存在） ====================
+sudo mkdir -p /etc/netdata
 cd /etc/netdata
 
-# ==================== 配置 stream.conf ====================
-# 备份
+# ==================== 3. 配置 stream.conf ====================
 if [ -f stream.conf ]; then
     sudo cp stream.conf "stream.conf.bak.$(date +%F-%H%M%S)"
 fi
 
-# 设置 destination
 if [ "$USE_SSL" = "ssl" ] || [ "$USE_SSL" = "SSL" ]; then
     DESTINATION="${PARENT}:19999:SSL"
 else
@@ -68,18 +68,21 @@ sudo cat > stream.conf << EOF
     enabled = yes
     destination = ${DESTINATION}
     api key = ${API_KEY}
-    # 彻底过滤日志相关指标
-    send charts matching = !*.logs* !*.journal* !*.log* !systemd* !logs.* !error.* !debug.*
-    send charts matching = system.* disk.* net.* memory.* cpu.* processes.* !*.debug*
+    # 只过滤日志相关内容，保留核心指标
+    send charts matching = !*.logs* !*.journal* !*.log.* !debug.*
     buffer size = 20MiB
     reconnect delay = 10s
 EOF
-echo "✅ stream.conf 配置完成（已加强日志过滤）"
+echo "✅ stream.conf 配置完成"
 
-# ==================== 配置 netdata.conf ====================
-sudo cat > /tmp/netdata.conf.new << 'EOC'
+# ==================== 4. 配置 netdata.conf ====================
+if [ -f netdata.conf ]; then
+    sudo cp netdata.conf "netdata.conf.bak.$(date +%F-%H%M%S)"
+fi
+
+sudo cat > netdata.conf << EOF
 [global]
-    hostname = HOSTNAME_PLACEHOLDER
+    hostname = ${HOSTNAME}
     memory mode = ram
     history = 7200
 
@@ -88,27 +91,15 @@ sudo cat > /tmp/netdata.conf.new << 'EOC'
     enable stock health configuration = no
 
 [plugins]
-    systemd-journal = no        # 彻底禁用系统日志采集
+    systemd-journal = no
     go.d = yes
 
 [logs]
     level = error
-EOC
-
-# 合并配置
-if [ -f netdata.conf ]; then
-    sudo cp netdata.conf "netdata.conf.bak.$(date +%F-%H%M%S)"
-    sudo sed -i "s|HOSTNAME_PLACEHOLDER|${HOSTNAME}|g" /tmp/netdata.conf.new
-    sudo awk '1' netdata.conf /tmp/netdata.conf.new > /tmp/netdata.conf.merged
-    sudo mv /tmp/netdata.conf.merged netdata.conf
-else
-    sudo sed -i "s|HOSTNAME_PLACEHOLDER|${HOSTNAME}|g" /tmp/netdata.conf.new
-    sudo mv /tmp/netdata.conf.new netdata.conf
-fi
-
+EOF
 echo "✅ netdata.conf 配置完成（已禁用日志）"
 
-# ==================== 重启 ====================
+# ==================== 5. 重启 Netdata ====================
 sudo systemctl restart netdata
 echo "✅ Netdata 已重启"
 
@@ -117,7 +108,7 @@ echo "🎉 配置完成！"
 echo "🔍 当前 stream 配置："
 cat /etc/netdata/stream.conf
 echo ""
-echo "📋 检查日志命令："
-echo "  sudo journalctl -u netdata -n 30 --no-pager | grep -E 'STREAM|journal|error'"
+echo "📋 建议检查命令："
+echo "  sudo journalctl -u netdata -n 30 --no-pager | grep -E 'STREAM|error'"
 echo ""
-echo "请刷新 Parent 仪表盘查看机器：${HOSTNAME}"
+echo "请刷新 Parent 仪表盘，查看机器名：${HOSTNAME}"
