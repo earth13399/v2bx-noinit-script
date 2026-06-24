@@ -69,7 +69,8 @@ sudo cat > stream.conf << EOF
     destination = ${DESTINATION}
     api key = ${API_KEY}
     # 只过滤日志相关内容，保留核心指标
-    send charts matching = !*.logs* !*.journal* !*.log.* !debug.*
+    send charts matching = !*.logs* !*.journal* !*.log* !systemd* !logs.* !error.* !debug.*
+    send charts matching = system.* disk.* net.* memory.* cpu.* processes.* !*.debug*
     buffer size = 20MiB
     reconnect delay = 10s
 EOF
